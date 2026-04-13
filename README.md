@@ -1,4 +1,4 @@
-# Raindrop Summarizer
+# Raindrop Digest
 
 ![logo](./contentassets/raindroplogo.png)
 
