@@ -2,7 +2,7 @@
 
 ![logo](./contentassets/raindroplogo.png)
 
-If you have a lot of bookmarks in [raindrop.io](https://raindrop.io/), Raindrop Digest` helps you get an AI powered summary of all bookmarks in a single folder of raindrop.io so that you can quickly review them instead of going through each item one by one.
+If you have a lot of bookmarks in [raindrop.io](https://raindrop.io/), `Raindrop Digest` helps you get an AI powered summary of all bookmarks in a single folder of raindrop.io so that you can quickly review them instead of going through each item one by one.
 
 Responsive  webapp for:
 
@@ -92,7 +92,7 @@ Open `http://localhost:3000`.
    - Add a database and background jobs if you want caching, retries, progress tracking, and historical summaries.
    - For large folders, process in a queue instead of one HTTP request.
 
-## Sample architecture
+## Architecture
 
 - `app/page.tsx`
   Responsive client UI
