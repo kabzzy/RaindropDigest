@@ -1,0 +1,482 @@
+:root {
+  --paper: #ffffff;
+  --ink: #171717;
+  --muted: #5a5a57;
+  --line: rgba(26, 26, 26, 0.18);
+  --brand: #0d3b66;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  background: #ffffff;
+  font-family: "Source Serif 4", "Iowan Old Style", Georgia, serif;
+}
+
+a {
+  color: inherit;
+}
+
+.auth-shell {
+  width: min(860px, calc(100vw - 28px));
+  min-height: 100vh;
+  margin: 0 auto;
+  display: grid;
+  place-items: center;
+  padding: 32px 0;
+}
+
+.auth-panel {
+  width: min(640px, 100%);
+  border-top: 6px solid var(--brand);
+  border-bottom: 2px solid var(--ink);
+  padding: 22px 0 24px;
+}
+
+.auth-actions {
+  margin-top: 22px;
+}
+
+.auth-form {
+  margin-top: 22px;
+  display: grid;
+  gap: 14px;
+}
+
+.button-link,
+.secondary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 16px;
+  border: 1px solid var(--line);
+  text-decoration: none;
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+  font-weight: 600;
+}
+
+.button-link {
+  background: var(--brand);
+  color: #fff;
+}
+
+.secondary-button {
+  background: #fff;
+  color: var(--ink);
+}
+
+.auth-note {
+  margin: 16px 0 0;
+  max-width: 58ch;
+  color: var(--muted);
+  line-height: 1.65;
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+  font-size: 0.95rem;
+}
+
+.auth-inline-code {
+  font-family: "SFMono-Regular", "Menlo", monospace;
+  font-size: 0.9em;
+  word-break: break-all;
+}
+
+.newsletter-shell {
+  width: min(860px, calc(100vw - 28px));
+  margin: 0 auto;
+  padding: 32px 0 64px;
+}
+
+.masthead {
+  border-top: 6px solid var(--brand);
+  border-bottom: 2px solid var(--ink);
+  padding: 18px 0 22px;
+}
+
+.masthead-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.masthead::before {
+  content: none;
+}
+
+.kicker {
+  margin: 0;
+  color: var(--brand);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+  font-weight: 700;
+}
+
+.masthead h1 {
+  margin: 10px 0 0;
+  font-size: clamp(2rem, 4.2vw, 3.4rem);
+  line-height: 0.96;
+  max-width: 15ch;
+}
+
+.lede {
+  margin: 16px 0 0;
+  max-width: 62ch;
+  color: var(--muted);
+  line-height: 1.65;
+  font-size: 1.06rem;
+}
+
+.session-box {
+  min-width: 220px;
+  padding-top: 6px;
+  text-align: right;
+}
+
+.session-label,
+.session-meta {
+  margin: 0;
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+  color: var(--muted);
+}
+
+.session-label {
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.session-name {
+  margin: 6px 0 4px;
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.session-meta {
+  font-size: 0.86rem;
+}
+
+.session-box .secondary-button {
+  margin-top: 12px;
+}
+
+.toolbar {
+  margin-top: 18px;
+  background: #ffffff;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 160px 130px auto;
+  gap: 12px;
+  padding: 16px 0 18px;
+  align-items: end;
+  border-bottom: 1px solid var(--line);
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+}
+
+.field-compact {
+  max-width: 130px;
+}
+
+.field-medium {
+  max-width: 160px;
+}
+
+.field label,
+.status {
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+  font-size: 0.83rem;
+  letter-spacing: 0.03em;
+  color: var(--muted);
+}
+
+select,
+input,
+button {
+  min-height: 48px;
+  border-radius: 0;
+  border: 1px solid var(--line);
+  font: inherit;
+}
+
+select {
+  width: 100%;
+  padding: 0 12px;
+  background: #fff;
+}
+
+input {
+  width: 100%;
+  padding: 0 12px;
+  background: #fff;
+}
+
+button {
+  padding: 0 15px;
+  background: var(--brand);
+  color: #fff;
+  cursor: pointer;
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+  font-weight: 600;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.status {
+  margin: 16px 2px 0;
+}
+
+.status.error {
+  color: #8f2a17;
+}
+
+.issue {
+  margin-top: 22px;
+  background: var(--paper);
+}
+
+.issue-header {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  padding: 0 0 20px;
+  border-bottom: 1px solid var(--line);
+  background: #ffffff;
+}
+
+.issue-label {
+  margin: 0 0 6px;
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+  color: var(--muted);
+  font-size: 0.76rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.issue-date,
+.issue-count {
+  margin: 0;
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+  color: var(--ink);
+  font-size: 0.98rem;
+  letter-spacing: 0.01em;
+}
+
+.issue-section {
+  padding: 26px 0 0;
+}
+
+.issue-section + .issue-section {
+  border-top: 1px solid var(--line);
+  margin-top: 24px;
+  padding-top: 24px;
+}
+
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-end;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(26, 26, 26, 0.1);
+}
+
+.section-heading p {
+  margin: 0;
+  color: var(--muted);
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+  font-size: 0.85rem;
+}
+
+.issue-section h2 {
+  margin: 0;
+  font-size: clamp(1.3rem, 2.4vw, 1.8rem);
+  line-height: 1;
+  letter-spacing: 0.01em;
+}
+
+.entry-list {
+  list-style: none;
+  margin: 0;
+  padding-left: 0;
+}
+
+.entry {
+  padding: 22px 0 24px;
+  border-bottom: 1px solid rgba(24, 24, 24, 0.12);
+}
+
+.entry:first-of-type {
+  padding-top: 0;
+}
+
+.entry:last-of-type {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.entry-meta {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  color: var(--muted);
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+  font-size: 0.8rem;
+}
+
+.entry-type {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: var(--brand);
+}
+
+.fallback-note {
+  position: relative;
+  display: inline-block;
+}
+
+.fallback-note summary {
+  list-style: none;
+  cursor: pointer;
+  color: #8f2a17;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.fallback-note summary::-webkit-details-marker {
+  display: none;
+}
+
+.fallback-popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 5;
+  width: min(360px, 80vw);
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  background: #fffdf9;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  color: var(--ink);
+}
+
+.fallback-popover p {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.fallback-popover p + p {
+  margin-top: 8px;
+}
+
+.entry h3 {
+  margin: 10px 0 6px;
+  font-size: clamp(1.32rem, 2.3vw, 1.9rem);
+  line-height: 1.12;
+}
+
+.entry h3 a {
+  color: var(--ink);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.entry-link {
+  margin: 0 0 14px;
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+  font-size: 0.87rem;
+  line-height: 1.4;
+}
+
+.entry-link a {
+  color: var(--brand);
+  text-decoration: none;
+  word-break: break-word;
+}
+
+.entry-summary {
+  margin: 0;
+  line-height: 1.78;
+  color: #232322;
+  font-size: 1.08rem;
+}
+
+.entry ul {
+  margin: 12px 0 0;
+  padding-left: 20px;
+  line-height: 1.6;
+  color: #2a2a29;
+}
+
+@media (max-width: 720px) {
+  .masthead-row {
+    flex-direction: column;
+  }
+
+  .session-box {
+    min-width: 0;
+    text-align: left;
+  }
+
+  .toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .field-compact {
+    max-width: none;
+  }
+
+  .field-medium {
+    max-width: none;
+  }
+
+  .issue-header {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .newsletter-shell {
+    width: min(100vw - 16px, 860px);
+    padding-top: 20px;
+  }
+
+  .toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .masthead h1 {
+    max-width: 100%;
+  }
+
+  .issue-header {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding-bottom: 16px;
+  }
+
+  .issue-section {
+    padding-top: 20px;
+  }
+}
