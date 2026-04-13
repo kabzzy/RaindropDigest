@@ -29,17 +29,18 @@ Build the image:
 docker build -f dockerfile -t raindrop-digest .
 ```
 
-If you plan to host the container in linux or cloud services, then build for target architectures, e.g.g
-```bash
-docker buildx build --platform linux/amd64,linux/arm64 -f dockerfile -t raindrop-summarizer .
-```
-
-
 Run the container:
 
 ```bash
 docker run --rm -p 3000:3000 --env-file .env.local raindrop-digest
 ```
+
+If you plan to host the container in linux or cloud services, then build for target architectures, e.g.
+```bash
+docker buildx build --platform linux/amd64,linux/arm64 -f dockerfile -t raindrop-digest .
+```
+
+
 
 Open `http://localhost:3000`.
 
