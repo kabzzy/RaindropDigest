@@ -1,15 +1,15 @@
 import { NextResponse } from "next/server";
 
-type LLMProvider = "openai" | "gemini";
+type LLMProvider = "openai" | "gemini" | "xai";
 type SummaryModel = string;
 
 function getProvider(): LLMProvider {
   const provider = process.env.LLM_PROVIDER?.trim().toLowerCase();
   if (!provider) {
-    throw new Error("Missing LLM_PROVIDER. Set LLM_PROVIDER in .env.local to `openai` or `gemini`.");
+    throw new Error("Missing LLM_PROVIDER. Set LLM_PROVIDER in .env.local to `openai`, `gemini`, or `xai`.");
   }
-  if (provider !== "openai" && provider !== "gemini") {
-    throw new Error("Invalid LLM_PROVIDER. Set LLM_PROVIDER in .env.local to `openai` or `gemini`.");
+  if (provider !== "openai" && provider !== "gemini" && provider !== "xai") {
+    throw new Error("Invalid LLM_PROVIDER. Set LLM_PROVIDER in .env.local to `openai`, `gemini`, or `xai`.");
   }
   return provider;
 }

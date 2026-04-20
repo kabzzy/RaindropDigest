@@ -16,7 +16,7 @@ export type CollectionOption = {
 
 export type SummaryModel = string;
 
-export type LLMProvider = "openai" | "gemini";
+export type LLMProvider = "openai" | "gemini" | "xai";
 
 export type RaindropItem = {
   _id: number;
@@ -49,6 +49,7 @@ export type SummaryResult = {
   confidence: number;
   summary: string;
   bullets: string[];
+  tags: string[];
   rationale: string;
   fallbackUsed: boolean;
   fallbackReason?: string | null;

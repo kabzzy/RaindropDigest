@@ -9,7 +9,7 @@ Responsive  webapp for:
 1. reading all links from one Raindrop.io folder, including the built-in `Unsorted` folder
 2. extracting page content
 3. classifying each item
-4. summarizing with selectable OpenAI or Gemini models in a newsletter style
+4. summarizing with selectable OpenAI, Gemini, or Grok models in a newsletter style, with automatic Grok routing for `x.com` links
 
 ## Run locally
 
@@ -26,18 +26,23 @@ npm run dev
 Build the image:
 
 ```bash
-docker build -f dockerfile -t raindrop-digest .
+docker build -f dockerfile -t raindrop-digest:local .
+```
+
+Multi-Platform Build
+```bash
+docker buildx build --platform linux/amd64,linux/arm64 -f dockerfile -t raindrop-digest:local .
 ```
 
 Run the container:
 
 ```bash
-docker run --rm -p 3000:3000 --env-file .env.local raindrop-digest
+docker run --rm -p 3000:3000 --env-file .env.local raindrop-digest:local
 ```
 
 If you plan to host the container in linux or cloud services, then build for target architectures, e.g.
 ```bash
-docker buildx build --platform linux/amd64,linux/arm64 -f dockerfile -t raindrop-digest .
+docker buildx build --platform linux/amd64 -f dockerfile -t raindrop-digest:latest .
 ```
 
 
@@ -48,10 +53,11 @@ Open `http://localhost:3000`.
 
 1. Authentication and configuration
    - Set `RAINDROP_TOKEN` in environment variables.
-   - Set `LLM_PROVIDER` in `.env.local` to `openai` or `gemini`.
+   - Set `LLM_PROVIDER` in `.env.local` to `openai`, `gemini`, or `xai`.
    - Set `LLM_MODEL` in `.env.local` to the exact model name you want to use for that provider.
    - Set `GEMINI_API_KEY` for Gemini-backed models.
    - Set `OPENAI_API_KEY` for OpenAI-backed models.
+   - Set `XAI_API_KEY` for xAI-backed models and for `x.com` links. Those links are always summarized with `grok-4-1-fast-reasoning`.
    - Set `PYTHON_BACKEND_URL` if the Next frontend should talk to a non-default backend URL.
    - Optional: `SUMMARIZE_CONCURRENCY` controls LLM call parallelism (default `2`).
 
@@ -66,9 +72,11 @@ Open `http://localhost:3000`.
 4. Content extraction
    - For each saved URL, fetch the page server-side and extract readable text with `@mozilla/readability`.
       - This keeps prompts smaller and more consistent than sending raw HTML to Gemini.
+   - For `x.com` post URLs, the backend does not scrape the page. It extracts the post ID from the URL and asks Grok to use its native X post fetching capability.
 
 5. Classification and summarization
    - Send extracted text to the selected LLM through LangChain with the chosen model determining the content type from page content.
+      - Saved links from `x.com` bypass the selected provider and use xAI Grok model `grok-4-1-fast-reasoning` automatically.
       - The backend returns:
          - `tech_article`
          - `non_tech_article`
@@ -111,9 +119,11 @@ Open `http://localhost:3000`.
 ## Notes
 
 - This app uses a personal Raindrop token for server-side access.
-- If `LLM_PROVIDER` is missing or invalid, the app returns a configuration error telling you to set it in `.env.local`.
+- If `LLM_PROVIDER` is missing or invalid, the app returns a configuration error telling you to set it in `.env.local` to `openai`, `gemini`, or `xai`.
 - If `LLM_MODEL` is missing, the app returns a configuration error telling you to set it in `.env.local`.
 - If the selected model's API key is missing or invalid, the backend returns a clear provider-specific error.
+- If an `x.com` link is encountered, the backend requires `XAI_API_KEY` and uses `grok-4-1-fast-reasoning` for both classification and summary expansion.
+- For `x.com` post URLs, the backend extracts the numeric post ID from the URL and prompts Grok to fetch and summarize the post natively instead of relying on scraped page text.
 - If the selected LLM call fails after client creation, the Python backend falls back to a local long-form extractive summary and marks the rationale accordingly.
 - Some pages block scraping or load content entirely in the browser. Those links may fall back to weak summaries unless you add a headless browser step.
 - PDFs, videos, and non-HTML documents need separate extraction pipelines.
