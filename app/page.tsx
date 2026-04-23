@@ -27,6 +27,8 @@ type ConfigResponse = {
   error?: string;
 };
 
+type ThemeMode = "light" | "dark";
+
 const toneLabels: Record<string, string> = {
   action_item: "Action Item",
   tech_article: "Tech Article",
@@ -48,6 +50,12 @@ const sectionTitles: Record<SummaryCategory, string> = {
   other: "Other Links"
 };
 
+const folderTooltip = "Choose the Raindrop folder you want to summarize.";
+const modelTooltip =
+  "To change the model used here, update the configuration file and check the README for more details.";
+const itemsTooltip = "Set how many saved links to include in this newsletter build.";
+const buildTooltip = "Build a newsletter-style summary for the selected folder and item count.";
+
 function wordCount(text: string): number {
   return text
     .trim()
@@ -55,16 +63,51 @@ function wordCount(text: string): number {
     .filter(Boolean).length;
 }
 
+async function copyTextToClipboard(text: string): Promise<void> {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.setAttribute("readonly", "true");
+  textarea.style.position = "fixed";
+  textarea.style.opacity = "0";
+  document.body.appendChild(textarea);
+  textarea.select();
+  document.execCommand("copy");
+  document.body.removeChild(textarea);
+}
+
 export default function HomePage() {
   const [collections, setCollections] = useState<CollectionOption[]>([]);
   const [selectedCollection, setSelectedCollection] = useState<string>("");
   const [selectedModel, setSelectedModel] = useState<SummaryModel>("");
-  const [availableModels, setAvailableModels] = useState<SummaryModel[]>([]);
   const [maxItems, setMaxItems] = useState<string>("20");
   const [items, setItems] = useState<SummarizedItem[]>([]);
   const [loadingCollections, setLoadingCollections] = useState(true);
   const [loadingSummary, setLoadingSummary] = useState(false);
   const [error, setError] = useState<string>("");
+  const [themeMode, setThemeMode] = useState<ThemeMode>("light");
+
+  useEffect(() => {
+    const storedTheme = window.localStorage.getItem("raindrop-digest-theme");
+    if (storedTheme === "light" || storedTheme === "dark") {
+      setThemeMode(storedTheme);
+      return;
+    }
+
+    const preferredTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
+    setThemeMode(preferredTheme);
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = themeMode;
+    window.localStorage.setItem("raindrop-digest-theme", themeMode);
+  }, [themeMode]);
 
   useEffect(() => {
     async function loadInitialData() {
@@ -94,9 +137,7 @@ export default function HomePage() {
         return;
       }
 
-      const models = configData.availableModels || [];
-      setAvailableModels(models);
-      setSelectedModel(configData.defaultModel || models[0] || "");
+      setSelectedModel(configData.defaultModel || configData.availableModels?.[0] || "");
       setCollections(collectionsData.collections || []);
       setSelectedCollection(
         collectionsData.collections?.[0]?.id ? String(collectionsData.collections[0].id) : ""
@@ -143,6 +184,14 @@ export default function HomePage() {
     setLoadingSummary(false);
   }
 
+  async function copyEntryUrl(url: string) {
+    try {
+      await copyTextToClipboard(url);
+    } catch {
+      // Ignore clipboard failures. The button remains non-blocking.
+    }
+  }
+
   const generatedAt = useMemo(
     () =>
       new Intl.DateTimeFormat("en-US", {
@@ -165,8 +214,47 @@ export default function HomePage() {
   return (
     <main className="newsletter-shell">
       <section className="masthead">
-        <p className="kicker">RAINDROP DIGEST</p>
-        <h1>Daily Link Intelligence</h1>
+        <div className="masthead-row">
+          <div>
+            <p className="kicker">RAINDROP DIGEST</p>
+            <h1>Your Bookmarks Summarized</h1>
+          </div>
+          <button
+            type="button"
+            className="theme-toggle"
+            onClick={() => setThemeMode(themeMode === "dark" ? "light" : "dark")}
+            aria-label={themeMode === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            title={themeMode === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+          >
+            {themeMode === "dark" ? (
+              <svg
+                className="theme-toggle-icon"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <circle cx="12" cy="12" r="4" />
+                <path d="M12 2.5v2.25" />
+                <path d="M12 19.25v2.25" />
+                <path d="M21.5 12h-2.25" />
+                <path d="M4.75 12H2.5" />
+                <path d="m18.72 5.28-1.59 1.59" />
+                <path d="m6.87 17.13-1.59 1.59" />
+                <path d="m18.72 18.72-1.59-1.59" />
+                <path d="M6.87 6.87 5.28 5.28" />
+              </svg>
+            ) : (
+              <svg
+                className="theme-toggle-icon"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7Z" />
+              </svg>
+            )}
+          </button>
+        </div>
         <p className="lede">
           A newsletter-style issue generated from one Raindrop folder. Every item is classified,
           linked, and summarized in long-form.
@@ -175,9 +263,10 @@ export default function HomePage() {
 
       <section className="toolbar" aria-label="Digest controls">
         <div className="field">
-          <label htmlFor="collection">Folder</label>
+          <label htmlFor="collection" title={folderTooltip}>Folder</label>
           <select
             id="collection"
+            title={folderTooltip}
             value={selectedCollection}
             onChange={(event) => setSelectedCollection(event.target.value)}
             disabled={loadingCollections || loadingSummary}
@@ -190,38 +279,28 @@ export default function HomePage() {
           </select>
         </div>
 
-        <div className="field field-medium">
-          <label htmlFor="model">Model</label>
-          <select
-            id="model"
-            value={selectedModel}
-            onChange={(event) => setSelectedModel(event.target.value as SummaryModel)}
-            disabled={loadingCollections || loadingSummary}
-          >
-            {availableModels.map((model) => (
-              <option key={model} value={model}>
-                {model}
-              </option>
-            ))}
-          </select>
-        </div>
-
         <div className="field field-compact">
-          <label htmlFor="max-items">Items</label>
+          <label htmlFor="max-items" title={itemsTooltip}>Items</label>
           <input
             id="max-items"
             type="number"
             min={1}
             max={500}
             inputMode="numeric"
+            title={itemsTooltip}
             value={maxItems}
             onChange={(event) => setMaxItems(event.target.value)}
             disabled={loadingCollections || loadingSummary}
           />
         </div>
 
-        <button onClick={summarizeCollection} disabled={!selectedCollection || loadingSummary}>
-          {loadingSummary ? "Building Issue..." : "Build Newsletter"}
+        <button
+          className="build-button"
+          title={buildTooltip}
+          onClick={summarizeCollection}
+          disabled={!selectedCollection || loadingSummary}
+        >
+          Build Newsletter
         </button>
       </section>
 
@@ -246,6 +325,10 @@ export default function HomePage() {
             <div>
               <p className="issue-label">Limit</p>
               <p className="issue-count">{maxItems}</p>
+            </div>
+            <div>
+              <p className="issue-label">Model</p>
+              <p className="issue-model">{selectedModel}</p>
             </div>
           </header>
 
@@ -285,9 +368,36 @@ export default function HomePage() {
                         <a href={item.url} target="_blank" rel="noreferrer">
                           {item.url}
                         </a>
+                        <button
+                          type="button"
+                          className="entry-copy-button"
+                          title="Copy this URL"
+                          aria-label="Copy this URL"
+                          onClick={() => void copyEntryUrl(item.url)}
+                        >
+                          <svg
+                            className="entry-copy-icon"
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                            focusable="false"
+                          >
+                            <path d="M9 4.75H7.75A2.75 2.75 0 0 0 5 7.5v10.75A2.75 2.75 0 0 0 7.75 21h8.5A2.75 2.75 0 0 0 19 18.25V17" />
+                            <path d="M10.75 3h5.5A2.75 2.75 0 0 1 19 5.75v7.5A2.75 2.75 0 0 1 16.25 16h-5.5A2.75 2.75 0 0 1 8 13.25v-7.5A2.75 2.75 0 0 1 10.75 3Z" />
+                          </svg>
+                        </button>
                       </p>
 
                       <p className="entry-summary">{item.summary.summary}</p>
+
+                      {item.summary.tags.length > 0 && (
+                        <div className="entry-tags" aria-label="Content tags">
+                          {item.summary.tags.map((tag) => (
+                            <span className="entry-tag" key={`${item.id}-${tag}`}>
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      )}
 
                       {item.summary.bullets.length > 0 && (
                         <ul>

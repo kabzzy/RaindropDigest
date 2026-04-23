@@ -3,7 +3,41 @@
   --ink: #171717;
   --muted: #5a5a57;
   --line: rgba(26, 26, 26, 0.18);
+  --line-soft: rgba(26, 26, 26, 0.1);
+  --line-strong: rgba(24, 24, 24, 0.12);
   --brand: #0d3b66;
+  --body-bg: #ffffff;
+  --surface: #ffffff;
+  --surface-muted: #f6f4ef;
+  --button-text: #ffffff;
+  --danger: #8f2a17;
+  --popover-bg: #fffdf9;
+  --summary-ink: #232322;
+  --list-ink: #2a2a29;
+  --brand-soft-bg: rgba(13, 59, 102, 0.06);
+  --brand-soft-line: rgba(13, 59, 102, 0.24);
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+html[data-theme="dark"] {
+  --paper: #11161c;
+  --ink: #eef1f5;
+  --muted: #afbac7;
+  --line: rgba(236, 240, 245, 0.16);
+  --line-soft: rgba(236, 240, 245, 0.12);
+  --line-strong: rgba(236, 240, 245, 0.14);
+  --brand: #8fc5ff;
+  --body-bg: #0b1015;
+  --surface: #131920;
+  --surface-muted: #1a222b;
+  --button-text: #071017;
+  --danger: #ff9d86;
+  --popover-bg: #171d24;
+  --summary-ink: #dde5ee;
+  --list-ink: #d1dae4;
+  --brand-soft-bg: rgba(143, 197, 255, 0.12);
+  --brand-soft-line: rgba(143, 197, 255, 0.28);
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.38);
 }
 
 * {
@@ -18,8 +52,9 @@ body {
   margin: 0;
   min-height: 100vh;
   color: var(--ink);
-  background: #ffffff;
+  background: var(--body-bg);
   font-family: "Source Serif 4", "Iowan Old Style", Georgia, serif;
+  transition: background-color 180ms ease, color 180ms ease;
 }
 
 a {
@@ -67,11 +102,11 @@ a {
 
 .button-link {
   background: var(--brand);
-  color: #fff;
+  color: var(--button-text);
 }
 
 .secondary-button {
-  background: #fff;
+  background: var(--surface);
   color: var(--ink);
 }
 
@@ -174,7 +209,7 @@ a {
 
 .toolbar {
   margin-top: 18px;
-  background: #ffffff;
+  background: transparent;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 160px 130px auto;
   gap: 12px;
@@ -197,11 +232,26 @@ a {
 }
 
 .field label,
+.field-label,
 .status {
   font-family: "Avenir Next", "Segoe UI", sans-serif;
   font-size: 0.83rem;
   letter-spacing: 0.03em;
   color: var(--muted);
+}
+
+.field-value {
+  min-height: 48px;
+  margin: 0;
+  padding: 12px;
+  border: 1px solid var(--line);
+  background: var(--surface-muted);
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+  font-size: 0.95rem;
+  overflow-wrap: anywhere;
 }
 
 select,
@@ -216,22 +266,54 @@ button {
 select {
   width: 100%;
   padding: 0 12px;
-  background: #fff;
+  background: var(--surface);
+  color: var(--ink);
 }
 
 input {
   width: 100%;
   padding: 0 12px;
-  background: #fff;
+  background: var(--surface);
+  color: var(--ink);
 }
 
 button {
   padding: 0 15px;
   background: var(--brand);
-  color: #fff;
+  color: var(--button-text);
   cursor: pointer;
   font-family: "Avenir Next", "Segoe UI", sans-serif;
   font-weight: 600;
+}
+
+.theme-toggle {
+  width: 48px;
+  min-width: 48px;
+  padding: 0;
+  background: transparent;
+  color: var(--ink);
+  justify-self: end;
+}
+
+.theme-toggle:hover {
+  border-color: var(--brand);
+}
+
+.theme-toggle-icon {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.build-button {
+  min-width: 148px;
+  white-space: nowrap;
+  text-align: center;
+  justify-self: center;
 }
 
 button:disabled {
@@ -244,12 +326,12 @@ button:disabled {
 }
 
 .status.error {
-  color: #8f2a17;
+  color: var(--danger);
 }
 
 .issue {
   margin-top: 22px;
-  background: var(--paper);
+  background: transparent;
 }
 
 .issue-header {
@@ -258,7 +340,7 @@ button:disabled {
   gap: 16px;
   padding: 0 0 20px;
   border-bottom: 1px solid var(--line);
-  background: #ffffff;
+  background: transparent;
 }
 
 .issue-label {
@@ -295,7 +377,7 @@ button:disabled {
   gap: 12px;
   align-items: flex-end;
   padding-bottom: 10px;
-  border-bottom: 1px solid rgba(26, 26, 26, 0.1);
+  border-bottom: 1px solid var(--line-soft);
 }
 
 .section-heading p {
@@ -318,9 +400,30 @@ button:disabled {
   padding-left: 0;
 }
 
+.entry-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0 0;
+}
+
+.entry-tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--brand-soft-line);
+  color: var(--brand);
+  background: var(--brand-soft-bg);
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
 .entry {
   padding: 22px 0 24px;
-  border-bottom: 1px solid rgba(24, 24, 24, 0.12);
+  border-bottom: 1px solid var(--line-strong);
 }
 
 .entry:first-of-type {
@@ -343,6 +446,38 @@ button:disabled {
   font-size: 0.8rem;
 }
 
+.entry-copy-button {
+  width: 18px;
+  height: 18px;
+  min-height: 18px;
+  min-width: 18px;
+  padding: 0;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: transparent;
+  color: var(--brand);
+  margin: 0 0 0 6px;
+  line-height: 0;
+  vertical-align: text-top;
+}
+
+.entry-copy-button:hover {
+  opacity: 0.72;
+}
+
+.entry-copy-icon {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .entry-type {
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -358,7 +493,7 @@ button:disabled {
 .fallback-note summary {
   list-style: none;
   cursor: pointer;
-  color: #8f2a17;
+  color: var(--danger);
   font-weight: 700;
   text-decoration: underline;
   text-underline-offset: 2px;
@@ -376,8 +511,8 @@ button:disabled {
   width: min(360px, 80vw);
   padding: 12px 14px;
   border: 1px solid var(--line);
-  background: #fffdf9;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  background: var(--popover-bg);
+  box-shadow: var(--shadow);
   color: var(--ink);
 }
 
@@ -418,7 +553,7 @@ button:disabled {
 .entry-summary {
   margin: 0;
   line-height: 1.78;
-  color: #232322;
+  color: var(--summary-ink);
   font-size: 1.08rem;
 }
 
@@ -426,7 +561,7 @@ button:disabled {
   margin: 12px 0 0;
   padding-left: 20px;
   line-height: 1.6;
-  color: #2a2a29;
+  color: var(--list-ink);
 }
 
 @media (max-width: 720px) {

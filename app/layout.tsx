@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import { ReactNode } from "react";
 
 export const metadata: Metadata = {
-  title: "Raindrop Summarizer",
-  description: "Summarize Raindrop.io collections with Gemini"
+  title: "Raindrop Digest",
+  description: "Summarize Raindrop.io collections"
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
